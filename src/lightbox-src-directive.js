@@ -158,24 +158,32 @@ angular.module('bootstrapLightbox').directive('lightboxSrc', ['$window',
           // http://stackoverflow.com/questions/5775469
           element[0].src = '//:0';
 
-          ImageLoader.load(src).then(function (image) {
-            // these variables must be set before resize(), as they are used in
-            // it
-            imageWidth = image.naturalWidth;
-            imageHeight = image.naturalHeight;
+          if (src) {
+            ImageLoader.load(src).then(function (image) {
+              // these variables must be set before resize(), as they are used in
+              // it
+              imageWidth = image.naturalWidth;
+              imageHeight = image.naturalHeight;
 
-            // resize the img element and the containing modal
-            resize();
+              // resize the img element and the containing modal
+              resize();
 
-            // show the image
-            element[0].src = src;
-          }, function () {
+              // show the image
+              element[0].src = src;
+            }, function () {
+              imageWidth = 0;
+              imageHeight = 0;
+
+              // resize the img element even if loading fails
+              resize();
+            });
+          } else {
             imageWidth = 0;
             imageHeight = 0;
 
-            // resize the img element even if loading fails
+            // resize the empty img element
             resize();
-          });
+          }
         } else { // video
           // default dimensions
           imageWidth = 1280;
